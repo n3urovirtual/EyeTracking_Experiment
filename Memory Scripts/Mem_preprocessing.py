@@ -71,8 +71,8 @@ for file in os.listdir(DATA_PATH):
     print(f'Processing participant {sub_id}.'
           f'This may take a while. Please wait!')
     
-    for i in img_id:
-        trial=dataset.query("USER.str.startswith('S"+str(i)+".').values")
+    for k in img_id:
+        trial=dataset.query("USER.str.startswith('S"+str(k)+".').values")
         new=trial['USER'].str.split("_", -1, expand=True)
         trial['IMAGE']=new[0]
         trial['CLUTTER']=new[1]
@@ -82,7 +82,7 @@ for file in os.listdir(DATA_PATH):
         trial.drop(['USER','IMAGE'],axis=1,inplace=True)
         m=trial['CS'].eq(1)
         clean=trial.loc[: m.idxmax()] if m.any() else trial.loc[:]
-        file_name='Sub_'+str(sub_id)+'_Image_'+str(i)+'.csv'
+        file_name='Sub_'+str(sub_id)+'_Image_'+str(k)+'.csv'
         clean.to_csv(os.path.join(TRIALS_PATH,file_name), 
                      index=False)
 

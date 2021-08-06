@@ -1,4 +1,4 @@
-''' Event Detection and collation into separate files'''
+''' EVENT DETECTION (FIXATIONS & SACCADES)'''
 
 import os
 import itertools
@@ -12,21 +12,21 @@ from helper import *
 for i,k in itertools.product(sub_id, img_id):
     file='Sub_'+str(i)+'_Image_'+str(k)+'.csv'
     dataset=pd.read_csv(os.path.join(TRIALS_PATH,file),low_memory=False)
-    s = dataset['Fix_or_Sac']
-    m = s != s.shift()
-    r = m.cumsum().groupby(s).rank(method='dense')
-    dataset['Group'] =  s +"_"+ r.astype(int).astype(str)
+    category = dataset['Fix_or_Sac']
+    watch_next = category != category.shift()
+    rank_order = watch_next.cumsum().groupby(category).rank(method='dense')
+    dataset['Group'] =  category +"_"+ rank_order.astype(int).astype(str)
     dataset.to_csv(os.path.join(TRIALS_PATH,file), index=False)
 
 
 #Create separate files for each participant's fixations:
 for i,k in itertools.product(sub_id, img_id):
     file='Sub_'+str(i)+'_Image_'+str(k)+'.csv'
-    dataset=pd.read_csv(os.path.join(TRIALS_PATH,file),low_memory=False)
+    trials=pd.read_csv(os.path.join(TRIALS_PATH,file),low_memory=False)
     events=pd.DataFrame()
-    events['Fixation_Start']=dataset.groupby('Group')['TIME'].min()
-    events['Event_ID']= dataset.groupby('Group')['Group'].first()
-    only_fixations=dataset.query("Group.str.startswith('F').values")
+    events['Fixation_Start']=trials.groupby('Group')['TIME'].min()
+    events['Event_ID']= trials.groupby('Group')['Group'].first()
+    only_fixations=trials.query("Group.str.startswith('F').values")
     time_fix_max=only_fixations.groupby('Group')['TIME'].max()
     time_fix_min=only_fixations.groupby('Group')['TIME'].min()
     events['FPOG_DUR']=time_fix_max-time_fix_min
@@ -38,27 +38,28 @@ for i,k in itertools.product(sub_id, img_id):
     events.drop('Idx', axis = 1,inplace=True)
     #final=events[(events['FPOG_DUR']> 0.050) | (events['SAC_DUR'] > 0.010)]
     to_write=events[events['FPOG_DUR']> 0.050]
-    to_write.loc[to_write.index[0], 'Trial_Start'] = dataset['TIME'].iloc[0]
+    to_write.loc[to_write.index[0], 'Trial_Start'] = trials['TIME'].iloc[0]
+    to_write.loc[to_write.index[0], 'Clutter'] = trials['CLUTTER'].iloc[0]
     to_write.to_csv(os.path.join(EVENTS_PATH,file), index=False)
     
 
 #Add columns about saccades to the files created above:
 for i,k in itertools.product(sub_id, img_id):
     file='Sub_'+str(i)+'_Image_'+str(k)+'.csv'
-    dataset=pd.read_csv(os.path.join(EVENTS_PATH,file),low_memory=False)
-    trial_start=dataset.iloc[0,5]
-    first_fixation_start=dataset.iloc[0,0]
-    first_fixation_dur=dataset.iloc[0,2]
-    dataset.loc[dataset.index[0],'SAC_LATENCY']=first_fixation_dur \
+    events=pd.read_csv(os.path.join(EVENTS_PATH,file),low_memory=False)
+    trial_start=events.iloc[0,5]
+    first_fixation_start=events.iloc[0,0]
+    first_fixation_dur=events.iloc[0,2]
+    events.loc[events.index[0],'SAC_LATENCY']=first_fixation_dur \
         if trial_start==first_fixation_start \
             else (first_fixation_start-trial_start) + first_fixation_dur
-    x=dataset['FPOG_X'].diff()
-    y=dataset['FPOG_Y'].diff()
-    dataset['SAC_AMPLITUDE']=(x ** 2 + y ** 2) ** 0.5
-    fix_dur_wo_last=dataset.iloc[:-1,2].reset_index(drop=True)
-    fix_start_dif=dataset['Fixation_Start'].diff().dropna().reset_index(drop=True)
-    dataset['SAC_DUR']=fix_start_dif-fix_dur_wo_last
-    dataset.to_csv(os.path.join(EVENTS_PATH,file), index=False)
+    x=events['FPOG_X'].diff()
+    y=events['FPOG_Y'].diff()
+    events['SAC_AMPLITUDE']=(x ** 2 + y ** 2) ** 0.5
+    fix_dur_wo_last=events.iloc[:-1,2].reset_index(drop=True)
+    fix_start_dif=events['Fixation_Start'].diff().dropna().reset_index(drop=True)
+    events['SAC_DUR']=fix_start_dif-fix_dur_wo_last
+    events.to_csv(os.path.join(EVENTS_PATH,file), index=False)
     
     
     '''sac_dur_min=dataset['SAC_DUR'].min() *1000
@@ -69,10 +70,10 @@ for i,k in itertools.product(sub_id, img_id):
 #Visualize scanpath for all participants based on I-VT fixations:
 for h,j in itertools.product(sub_id,img_id):
     file='Sub_'+str(h)+'_Image_'+str(j)+'.csv'
-    dataset=pd.read_csv(os.path.join(EVENTS_PATH,file),low_memory=False)
-    x=dataset['FPOG_X']
-    y=dataset['FPOG_Y']
-    fix_dur=dataset['FPOG_DUR']
+    events=pd.read_csv(os.path.join(EVENTS_PATH,file),low_memory=False)
+    x=events['FPOG_X']
+    y=events['FPOG_Y']
+    fix_dur=events['FPOG_DUR']
     fig, ax = plt.subplots(figsize=(20, 11))
     ax.scatter(x,
                y,

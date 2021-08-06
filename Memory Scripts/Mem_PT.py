@@ -39,8 +39,8 @@ for i,k in itertools.product(sub_id, img_id):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,11))
     fig.suptitle(f'Subject:{str(i)} , Image:{str(k)}',size=30)
     time=dataset['Sampling_Rate'].cumsum()
-    smoothed_velocity1=dataset['Velocity_in_deg2']
-    smoothed_velocity2=dataset['Smoothed_Velocity_in_deg2']
+    smoothed_velocity1=dataset['Velocity_in_deg']
+    smoothed_velocity2=dataset['Smoothed_Velocity_in_deg']
     ax1.plot(time, smoothed_velocity1)
     ax2.plot(time, smoothed_velocity2)
     #plt.axhline(90, color='red')
