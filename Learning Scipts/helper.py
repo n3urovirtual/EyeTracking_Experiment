@@ -105,20 +105,29 @@ sub_id=[1,
         30,
         31]
 
+
+DATA_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
+    'cluttered scenes v.3/Eye Tracking Data/1. Associative Learning/Raw'
+
 TRIALS_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
         'cluttered scenes v.3/Eye Tracking Data/'\
             '1. Associative Learning/Learn_trials'
 
-IMG_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
-        'cluttered scenes v.3/Tasks/Task2/Scenes'
-
 EVENTS_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
         'cluttered scenes v.3/Eye Tracking Data/'\
             '1. Associative Learning/Learn_events'
+            
+COLLATION_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
+        'cluttered scenes v.3/Eye Tracking Data/'\
+            '1. Associative Learning/Learn_collation'
 
-DATA_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
-    'cluttered scenes v.3/Eye Tracking Data/1. Associative Learning/Raw'
-    
+DIR_ROUTE_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
+        'cluttered scenes v.3/Eye Tracking Data/'\
+            '1. Associative Learning/Learn_direct_route'
+            
+IMG_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
+        'cluttered scenes v.3/Tasks/Task2/Scenes'
+
 RAW_SCANPATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
     'cluttered scenes v.3/Eye Tracking Data/1. Associative Learning/'\
         'Learn_ visualizations/Raw_Scanpaths'

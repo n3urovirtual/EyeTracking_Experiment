@@ -11,24 +11,26 @@ from helper import img_id,sub_id,TRIALS_PATH
 #Apply PT into smoothed memory data to find sample-to-sample distance:
     
 for k,i in itertools.product(sub_id, img_id):
-    file='Sub_'+str(k)+'_Image_'+i.split('.')[0]+'_Block_3.csv' #Block 0,1,2,3
-    dataset=pd.read_csv(os.path.join(TRIALS_PATH,file),low_memory=False)
-    dataset['Sampling_Rate']=dataset['TIME'].diff().fillna(0).to_numpy()
-    x=dataset['BPOGX'].diff().fillna(0).to_numpy()
-    y=dataset['BPOGY'].diff().fillna(0).to_numpy()
-    sample_2_sample_distance= (x ** 2 + y ** 2) ** 0.5
-    distance=np.nan_to_num(sample_2_sample_distance)
-    dataset['Distance2']=distance
-    dataset['Velocity_in_px2']= dataset['Distance2']/dataset['Sampling_Rate']
-    dataset['Velocity_in_deg2']= dataset['Velocity_in_px2']*0.025
-    vel=dataset['Velocity_in_deg2'].fillna(0)
-    sav_vel=savgol_filter(vel, 11, 2)
-    dataset['Smoothed_Velocity_in_deg2']=sav_vel.tolist()
-    dataset['Fix_or_Sac']=np.where(dataset['Smoothed_Velocity_in_deg2']>120, 
-                                   'Sac',
-                                   'Fix')
-    dataset=dataset[dataset['Velocity_in_deg2']!=0]
-    dataset.to_csv(os.path.join(TRIALS_PATH,file), index=False)
+    for j in range(0,4):
+        image=i.split('.')[0]
+        file='Sub_'+str(k)+'_Image_'+image+'_Block_'+str(j)+'.csv' 
+        dataset=pd.read_csv(os.path.join(TRIALS_PATH,file),low_memory=False)
+        x=dataset['BPOGX'].diff().fillna(0).to_numpy()
+        y=dataset['BPOGY'].diff().fillna(0).to_numpy()
+        sample_2_sample_distance= (x ** 2 + y ** 2) ** 0.5
+        dataset['Distance']=np.nan_to_num(sample_2_sample_distance)
+        dataset['Sampling_Rate']=dataset['TIME'].diff().fillna(0).to_numpy()
+        dataset['Velocity_in_px']= dataset['Distance']/dataset['Sampling_Rate']
+        dataset['Velocity_in_deg']= dataset['Velocity_in_px']*0.025
+        dataset['Velocity_in_deg']= dataset['Velocity_in_deg'].fillna(0)
+        dataset=dataset[dataset['Velocity_in_deg']!=0]
+        vel=dataset['Velocity_in_deg']
+        sav_vel=savgol_filter(vel, 11, 2)
+        dataset['Smoothed_Velocity_in_deg']=sav_vel.tolist()
+        fix_or_sac=dataset['Smoothed_Velocity_in_deg']>120
+        dataset['Fix_or_Sac']=np.where(fix_or_sac, 'Sac','Fix')
+        to_write=dataset[dataset['Smoothed_Velocity_in_deg']<1000]
+        to_write.to_csv(os.path.join(TRIALS_PATH,file), index=False)
     
 
 '''

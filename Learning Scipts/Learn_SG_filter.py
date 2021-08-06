@@ -1,4 +1,4 @@
-'''APPLY SAVITZKY-GOLAY FILTER IN MEMORY DATA (PER TRIAL)'''
+'''APPLY SAVITZKY-GOLAY FILTER IN MEMORY DATA (PER TRIAL)
 
 import os
 import itertools
@@ -55,6 +55,6 @@ for i,k in itertools.product(sub_id, img_id):
                extent=[-960, 960, -540, 540],
                aspect='auto')
     plt.show()
-    plt.close()
+    plt.close()'''
 
 

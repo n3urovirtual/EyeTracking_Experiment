@@ -84,7 +84,8 @@ for file in os.listdir(DATA_PATH):
         trial.drop(['USER','IMAGE'],axis=1,inplace=True)
         m=trial['CS'].eq(1)
         clean=trial.loc[: m.idxmax()] if m.any() else trial.loc[:]
-        file_name='Sub_'+str(sub_id)+'_Image_'+i.split('.')[0]+'_Block_'+str(j)+'.csv'
+        img_num=i.split('.')[0]
+        file_name='Sub_'+str(sub_id)+'_Image_'+img_num+'_Block_'+str(j)+'.csv'
         clean.to_csv(os.path.join(TRIALS_PATH,file_name), 
                      index=False)
 
