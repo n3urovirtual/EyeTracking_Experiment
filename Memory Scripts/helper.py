@@ -77,7 +77,7 @@ img_id=[1,
 
 sub_id=[1,
         2,
-        3,
+        
         4,
         5,
         6,
@@ -104,6 +104,9 @@ sub_id=[1,
         29,
         30,
         31]
+
+BEHAVIORAL_FILE='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
+    'cluttered scenes v.3/Behavioral Data/Memory/Preprocessed/Memory_all_dirty.csv'
 
 DATA_PATH='C:/Users/presi/Desktop/PhD/Memory guided attention in '\
     'cluttered scenes v.3/Eye Tracking Data/2. Memory/Raw'
